@@ -1,3 +1,9 @@
+locals {
+  resource_group_name=var.resource_group_name
+  location=var.location
+}
+
+/*
 resource "azurerm_resource_group" "example" {
   name     = var.resource_group_name
   location = var.location
@@ -15,19 +21,21 @@ module "network" {
                                                           }
   depends_on          = [azurerm_resource_group.example]
 }
+*/
 
+/*
 resource "azurerm_log_analytics_workspace" "main" {
   name                = "${var.cluster_name}-workspace"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = local.location
+  resource_group_name = local.resource_group_name
   sku                 = "PerGB2018" 
   retention_in_days   = 31 # no charge for up to first 31 days. range: 30-730 (days)
 }
 
 resource "azurerm_log_analytics_solution" "main" {
   solution_name         = "ContainerInsights"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = local.location
+  resource_group_name = local.resource_group_name
  
   workspace_resource_id = azurerm_log_analytics_workspace.main.id
   workspace_name        = azurerm_log_analytics_workspace.main.name
@@ -37,12 +45,13 @@ resource "azurerm_log_analytics_solution" "main" {
     product   = "OMSGallery/ContainerInsights"
   }
 }
+*/
 
 resource "azurerm_kubernetes_cluster" "main" {
   name                    = var.cluster_name
   kubernetes_version      = var.cluster_version # kubernetes version
-  location                = azurerm_resource_group.example.location
-  resource_group_name     = azurerm_resource_group.example.name
+  location                = local.location
+  resource_group_name     = local.resource_group_name
   dns_prefix              = var.cluster_name
   sku_tier                = "Free" # "Free" or "Paid"
   private_cluster_enabled = true # make a private aks cluster
@@ -61,7 +70,8 @@ resource "azurerm_kubernetes_cluster" "main" {
     node_count              = 3
     vm_size                 = var.vm_size
     os_disk_size_gb         = 50
-    vnet_subnet_id          = module.network.vnet_subnets[0]
+    vnet_subnet_id          = var.subnet_id
+    #vnet_subnet_id          = module.network.vnet_subnets[0]
     enable_auto_scaling     = false 
     max_count               = null
     min_count               = null
@@ -77,13 +87,14 @@ resource "azurerm_kubernetes_cluster" "main" {
   }
 
   
-  # service_principal {
-    #  use managed identity below instead
-  #}
-
-  identity {
-    type = "SystemAssigned" # "SystemAssigned" or "UserAssigned"
+  service_principal {
+    client_id = var.client_id
+    client_secret = var.client_secret
   }
+
+  #identity {
+  #  type = "SystemAssigned" # "SystemAssigned" or "UserAssigned"
+  #}
 
   addon_profile {
     kube_dashboard {
@@ -96,7 +107,8 @@ resource "azurerm_kubernetes_cluster" "main" {
 
     oms_agent {
       enabled                    = true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+      log_analytics_workspace_id = var.log_analytics_workspace_id
+      #log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
     }
   }
 

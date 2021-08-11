@@ -1,6 +1,10 @@
-resource_group_name = "deleteme-aksdemo"
+resource_group_name = "dev-infracm"
 cluster_name = "hyukdemo"
+subnet_id=""
+log_analytics_workspace_id=""
 
+cliend_id={client_id here}
+client_secret={client_secret here}
 
 
 bastion = {

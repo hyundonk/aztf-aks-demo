@@ -23,4 +23,8 @@ variable "vm_size" {
 
 variable "bastion"       {}
 
+variable "subnet_id" {}
+variable "log_analytics_workspace_id" {}
+variable "client_id" {}
+variable "client_secret" {}
 
