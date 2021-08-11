@@ -1,5 +1,5 @@
 resource_group_name = "deleteme-aksdemo"
-cluster_name = "mydemocluster"
+cluster_name = "hyukdemo"
 
 
 
