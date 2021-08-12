@@ -71,8 +71,6 @@ vm_size=Standard_D4s_v3
 
 loganalytics_workspace_id=$(az monitor log-analytics workspace show --resource-group deleteme-aksdemo --workspace-name hyukdemo-workspace --query id -o tsv)
 
-loganalytics_workspace_id="/subscriptions/{subscription-id}/resourcegroups/deleteme-aksdemo/providers/microsoft.operationalinsights/workspaces/hyukdemo-workspace"
-
 # create a resource group
 az group create --name $resource_group_name --location $location
 
