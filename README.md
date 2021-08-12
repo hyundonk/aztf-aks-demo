@@ -303,6 +303,26 @@ az k8s-extension create --name azuremonitor-containers \
 
 ### Ref) 
 
+### AKS 배포시 service principal vs Managed Identity 차이 
+
+AKS cluster가 Azure API와 연동하여Azure 리소스들을 접근하거나 관리하기 위한 방법으로 아래 두가지 방법이 있습니다. 
+
+1. [Service      principal 이용](https://docs.microsoft.com/en-us/azure/aks/kubernetes-service-principal?tabs=azure-cli). 
+
+   Service Principal은 Azure AD와 연동하는 application에게 할당하여 Azure 리소스에 대한 권한을 부여할 수 있습니다. 고객은 Service Principal의 대한 renewal을 관리해야 합니다.
+
+2. [Managed      Identity 이용.](https://docs.microsoft.com/en-us/azure/aks/use-managed-identity) 
+
+   Managed Identity는 service principal을 기본으로 한 서비스지만 자동 credential rotation 지능을 제공하여 고객이 별도로 renewal할 필요가 없습니다. 단 [특정 azure 리소스 Type](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-managed-identities)들에만 할당할 수 있습니다. 
+
+AKS 배포 시 두 방법 중에 1개의 방법을 적용합니다. (두 옵션을 모두 지정한 경우, AKS는 “Managed Identity”를 사용합니다.)
+
+참고로 service principal을 사용하는 경우에도 AKS 리소스를 배포할 때 사용하는 service principal과 AKS 리소스에 할당할 service principal은 별도로 가져가시는 것을 권고합니다. 
+
+https://docs.microsoft.com/en-us/azure/aks/kubernetes-service-principal?tabs=azure-cli#additional-considerations
+
+Managed identity를 사용하는 경우에도 AKS 생성시 자동으로 할당되는 “System-assigned managed identity” 대신 미리 별도로 “User Assigned managed identity”를 생성하여 해당 managed identity를 부여할 수도 있습니다. https://docs.microsoft.com/en-us/azure/aks/use-managed-identity#bring-your-own-control-plane-mi
+
 
 
 A. Encryption at Host (https://docs.microsoft.com/en-us/azure/aks/enable-host-encryption)
