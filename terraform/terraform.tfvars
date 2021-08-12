@@ -1,4 +1,4 @@
-resource_group_name = "dev-infracm"
+resource_group_name = "myresourcegroup"
 cluster_name = "hyukdemo"
 subnet_id=""
 log_analytics_workspace_id=""
